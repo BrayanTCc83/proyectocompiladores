@@ -10,6 +10,7 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
+int state;
 
 %}
 
@@ -18,10 +19,15 @@ letm	[a-z]
 Dig	[1-9]
 vocA	[áéíóú]
 VocA	[ÁÉÍÓÚ]
+PalRes	("Bool"|"Cade"|"Continuar"|"Devo"|"Ent"|"Fals"|"Flota"|"Global"|"Haz"|"Mientras"|"Nulo"|"Para"|"Parar"|"Si"|"Sino"|"Ver")
+SimEsp	(<|>|<<|>>|#|#!|\*|"|"|º)
 Ident	"@"({letM}|{letm}|{Dig}|0|{vocA}|{VocA}|"ñ"|"Ñ")+"_"
 CCad	"--".+"--"
 CEnt	[+\-]?(0|{Dig})+("p"|"P")?
 CRel	{Dig}+("'")({Dig}|0)*("r"|"R")?
+OpAri   ("sum"|"rest"|"mult"|"div"|"mod"|"inc"|"dec"|"exp"|"dive")
+OpRel	({Ident}|{CEnt}|{CRel})("h"|"m"|"e"|"c"|"he"|"me")({Ident}|{CEnt}|{CRel})
+OpAsi   {Ident}("->"|"+->"|"-->"|"*->"|"/->"|"%->"|">>"|"<<"|"^->"|"&->")
 
 %%
 {Ident}		printf("%s es un identificador\n", yytext);
@@ -35,3 +41,4 @@ int main ()
 {
 	yylex();
 }
+
