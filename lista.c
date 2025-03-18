@@ -37,6 +37,7 @@ void lista_insertar(Lista *lista, Valor valor) {
 
     Nodo *nuevoNodo = nuevo_nodo(lista->final, lista->inicio, valor);
     lista->tamano++;
+    lista->inicio->anterior = nuevoNodo;
     lista->final->siguiente = nuevoNodo;
     lista->final = nuevoNodo;
 }

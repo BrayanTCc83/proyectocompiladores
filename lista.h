@@ -2,6 +2,9 @@
 #define _PROYECTO_COMPILADORES_LISTA
 #include <stdbool.h>
 
+/**
+ * Definimos el nodo, usado para poder trabajar con la lista
+ */
 typedef struct _nodo_t Nodo;
 typedef void* Valor;
 

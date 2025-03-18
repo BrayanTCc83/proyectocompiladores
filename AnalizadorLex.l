@@ -18,6 +18,8 @@
     Tabla *reservadas, *especiales, *identificadores, *aritmeticos, *relacionales, *asignacion, *cadenas, *enteros, *reales;
     Tabla *tokens;
 
+    FILE *salida;
+
     int state;
 %}
 
@@ -36,7 +38,7 @@ CEnt	[+\-]?(0|{Dig})+("p"|"P"|"g"|"G")?
 CRel	({Dig}*("'")({Dig}|0)+)|({CEnt}("r"|"R"))
 OpAri   ("sum"|"rest"|"mult"|"div"|"mod"|"inc"|"dec"|"exp"|"dive")
 OpRel	("h"|"m"|"e"|"c"|"he"|"me")
-OpAsi   ("->"|"+->"|"-->"|"*->"|"/->"|"%->"|">>"|"<<"|"^->"|"&->")
+OpAsi   ("->"|"+->"|"-->"|"*->"|"/->"|"%->"|">>->"|"<<->"|"^->"|"&->")
 Comen   \[.*\]
 
 %%
@@ -88,7 +90,8 @@ Comen   \[.*\]
 %%
 
 void yyerror(const char *error) {
-    printf("[Error Linea %d]: %s\n", yylineno, error);
+    fprintf(salida, "[Error Linea %d]: %s\n", yylineno, error);
+    fprintf(stdout, "[Error Linea %d]: %s\n", yylineno, error);
 }
 
 int yywrap() {
@@ -111,7 +114,7 @@ int main(int argc, char *argv[]) {
     relacionales = nueva_tabla("Relacional", RELACIONAL);
     tabla_llenar(relacionales, 6, "h", "m", "e", "c", "he", "me");
     asignacion = nueva_tabla("Asignacion", ASIGNACION);
-    tabla_llenar(asignacion, 10, "->", "+->", "-->", "*->", "/->", "%->", ">>", "<<", "^->", "&->");
+    tabla_llenar(asignacion, 10, "->", "+->", "-->", "*->", "/->", "%->", ">>->", "<<->", "^->", "&->");
     // Tablas dinámicas
     identificadores = nueva_tabla("Identificadores", IDENTIFICADOR);
     cadenas = nueva_tabla("Literales cadenas", LITERAL_CADENA);
@@ -121,17 +124,30 @@ int main(int argc, char *argv[]) {
 
     int archivo = 1;
     yyin = fopen(argv[archivo], "r");
+    salida = fopen("salida.txt", "w");
+
 	yylex();
 
-    tabla_imprimir(*reservadas);
-    tabla_imprimir(*especiales);
-    tabla_imprimir(*identificadores);
-    tabla_imprimir(*aritmeticos);
-    tabla_imprimir(*relacionales);
-    tabla_imprimir(*asignacion);
-    tabla_imprimir(*cadenas);
-    tabla_imprimir(*enteros);
-    tabla_imprimir(*reales);
-    tabla_imprimir(*tokens);
+    tabla_imprimir(stdout, *reservadas);
+    tabla_imprimir(stdout, *especiales);
+    tabla_imprimir(stdout, *identificadores);
+    tabla_imprimir(stdout, *aritmeticos);
+    tabla_imprimir(stdout, *relacionales);
+    tabla_imprimir(stdout, *asignacion);
+    tabla_imprimir(stdout, *cadenas);
+    tabla_imprimir(stdout, *enteros);
+    tabla_imprimir(stdout, *reales);
+    tabla_imprimir(stdout, *tokens);
+    
+    tabla_imprimir(salida, *reservadas);
+    tabla_imprimir(salida, *especiales);
+    tabla_imprimir(salida, *identificadores);
+    tabla_imprimir(salida, *aritmeticos);
+    tabla_imprimir(salida, *relacionales);
+    tabla_imprimir(salida, *asignacion);
+    tabla_imprimir(salida, *cadenas);
+    tabla_imprimir(salida, *enteros);
+    tabla_imprimir(salida, *reales);
+    tabla_imprimir(salida, *tokens);
     return EXIT_SUCCESS;
 }

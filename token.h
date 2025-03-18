@@ -1,6 +1,9 @@
 #ifndef _PROYECTO_COMPILADORES_TOKEN
 #define _PROYECTO_COMPILADORES_TOKEN
+
 #include "lista.h"
+#include <stdio.h>
+
 #define REGISTRO_CADENA_LONGITUD    100
 
 typedef enum _tipo_dato_t {
@@ -79,6 +82,6 @@ void tabla_llenar(Tabla*, int, ...);
 int tabla_insertar(Tabla*, Valor);
 int tabla_buscar(Tabla, Valor);
 void tabla_eliminar(Tabla*);
-void tabla_imprimir(Tabla);
+void tabla_imprimir(FILE*, Tabla);
 
 #endif // _PROYECTO_COMPILADORES_TOKEN

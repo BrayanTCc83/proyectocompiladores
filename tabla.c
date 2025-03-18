@@ -52,36 +52,36 @@ void tabla_eliminar(Tabla *tabla) {
     free(tabla);
 }
 
-void tabla_imprimir(Tabla tabla) {
+void tabla_imprimir(FILE *archivo, Tabla tabla) {
     size_t i = 0;
-    printf("\n%s:\n\n", tabla.nombre);
+    fprintf(archivo, "\n%s:\n\n", tabla.nombre);
     switch (tabla.tablaTipo) {
         case TOKEN:
-            printf("| %10s | %10s |\n", "Clase", "Posicion");
+            fprintf(archivo, "| %10s | %10s |\n", "Clase", "Posicion");
             break;
         case LITERAL_CADENA:
-            printf("| %10s | %50s |\n", "Posicion", "Valor");
+            fprintf(archivo, "| %10s | %50s |\n", "Posicion", "Valor");
             break;
         case LITERAL_ENTERA:
-            printf("| %10s | %10s |\n", "Posicion", "Valor");
+            fprintf(archivo, "| %10s | %10s |\n", "Posicion", "Valor");
             break;
         case LITERAL_REAL:
-            printf("| %10s | %10s |\n", "Posicion", "Valor");
+            fprintf(archivo, "| %10s | %10s |\n", "Posicion", "Valor");
             break;
         case IDENTIFICADOR:;
-            printf("| %10s | %30s | %10s |\n", "Posicion", "Identificador", "Tipo");
+            fprintf(archivo, "| %10s | %30s | %10s |\n", "Posicion", "Identificador", "Tipo");
             break;
         default:
-            printf("| %10s | %10s |\n", "Posicion", "Valor");
+            fprintf(archivo, "| %10s | %10s |\n", "Posicion", "Valor");
     }
     
     Nodo *aux = tabla.lista->inicio;
     while(aux != tabla.lista->final) {
-        printf("%s\n", registro_a_cadena((RegistroTabla*)(aux->valor), tabla.tablaTipo));
+        fprintf(archivo, "%s\n", registro_a_cadena((RegistroTabla*)(aux->valor), tabla.tablaTipo));
         aux = aux->siguiente;
     }
     if(aux == NULL) {
         return;
     }
-    printf("%s\n", registro_a_cadena((RegistroTabla*)(aux->valor), tabla.tablaTipo));
+    fprintf(archivo, "%s\n", registro_a_cadena((RegistroTabla*)(aux->valor), tabla.tablaTipo));
 }
