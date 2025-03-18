@@ -26,13 +26,18 @@ Lista *nueva_lista(FuncionComparar comparar, FuncionEliminar eliminar, FuncionAC
     return nuevaLista;
 }
 
-void lista_insertar(Lista *lista, Valor valor) {
+int lista_insertar(Lista *lista, Valor valor) {
     if(lista->inicio == NULL) {
         Nodo *nuevoNodo = nuevo_nodo(NULL, NULL, valor);
         nuevoNodo->anterior = nuevoNodo->siguiente = nuevoNodo;
         lista->inicio = lista->final = nuevoNodo;
         lista->tamano++;
-        return;
+        return 0;
+    }
+
+    int pos = lista_buscar(*lista, valor);
+    if(pos != -1) {
+        return pos;
     }
 
     Nodo *nuevoNodo = nuevo_nodo(lista->final, lista->inicio, valor);
@@ -40,6 +45,7 @@ void lista_insertar(Lista *lista, Valor valor) {
     lista->inicio->anterior = nuevoNodo;
     lista->final->siguiente = nuevoNodo;
     lista->final = nuevoNodo;
+    return lista->tamano - 1;
 }
 
 int lista_buscar(Lista lista, Valor valor) {

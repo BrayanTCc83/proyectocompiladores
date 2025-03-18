@@ -31,8 +31,7 @@ void tabla_llenar(Tabla *tabla, int cantidad, ...) {
 
 int tabla_insertar(Tabla *tabla, Valor valor) {
     int indice = tabla->lista->tamano;
-    lista_insertar(tabla->lista, nuevo_registro_tabla(indice, tabla->tablaTipo, valor));
-    return indice;
+    return lista_insertar(tabla->lista, nuevo_registro_tabla(indice, tabla->tablaTipo, valor));
 }
 
 int tabla_buscar(Tabla tabla, Valor valor) {

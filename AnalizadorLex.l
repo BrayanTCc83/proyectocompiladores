@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
     asignacion = nueva_tabla("Asignacion", ASIGNACION);
     tabla_llenar(asignacion, 10, "->", "+->", "-->", "*->", "/->", "%->", ">>->", "<<->", "^->", "&->");
     // Tablas dinámicas
-    identificadores = nueva_tabla("Identificadores", IDENTIFICADOR);
+    identificadores = nueva_tabla("Simbolos", IDENTIFICADOR);
     cadenas = nueva_tabla("Literales cadenas", LITERAL_CADENA);
     enteros = nueva_tabla("Literales enteras", LITERAL_ENTERA);
     reales = nueva_tabla("Literales reales", LITERAL_REAL);

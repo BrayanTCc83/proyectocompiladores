@@ -50,3 +50,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Ignorar generados
+*.out
+*.exe
+lex.yy.c
+salida.txt

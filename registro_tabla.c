@@ -24,11 +24,12 @@ bool registro_tabla_comparar(Valor registro, Valor valor) {
         case LITERAL_REAL:
             break;
         case IDENTIFICADOR:
-            break;
+            return strcmp(((RegistroTabla*)registro)->valor.v_identificador->identificador, 
+                ((RegistroTabla*)valor)->valor.v_identificador->identificador) == 0;
         default:
             return strcmp(((RegistroTabla*)registro)->estatico, (char*)valor) == 0;
     }
-    return true;
+    return false;
 }
 
 void registro_tabla_eliminar(RegistroTabla *registro, TablaTipo tipo) {

@@ -3,9 +3,14 @@
 #include <stdbool.h>
 
 /**
- * Definimos el nodo, usado para poder trabajar con la lista
+ * Definimos el nodo, usado para poder trabajar con la lista, se hará uso
+ * de una lista doblemenete enlazada.
  */
 typedef struct _nodo_t Nodo;
+/**
+ * Definimos un puntero genérico para nuestra lista, así nos aseguramos de
+ * abstraer el comportamiento de la lista, dependerá de 
+ */
 typedef void* Valor;
 
 typedef bool (*FuncionComparar)(Valor, Valor);
@@ -31,7 +36,7 @@ void nodo_eliminar(Nodo*, FuncionEliminar);
 char *nodo_a_cadena(Nodo*, FuncionACadena);
 
 Lista *nueva_lista(FuncionComparar, FuncionEliminar, FuncionACadena);
-void lista_insertar(Lista*, Valor);
+int lista_insertar(Lista*, Valor);
 int lista_buscar(Lista, Valor);
 void lista_eliminar(Lista*);
 void lista_imprimir_detalles(Lista*);
