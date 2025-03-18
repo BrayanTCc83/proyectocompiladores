@@ -1,7 +1,7 @@
 %{
     /* Proyecto Analizador Léxico Compiladores
     /* Alumnos: Enzo Valdés Zavala
-    /* --
+    /* Téllez Cruz Brayan
     * Objetivo: Elaborar un analizador léxico en lex/flex que reconozca los componentes léxicos
     * pertenecientes a las clases descritas y definidas en clase.
     * Este recibira un archivo de entrada, el cual se indica desde la linea de comandos al momento
