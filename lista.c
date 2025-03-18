@@ -5,9 +5,21 @@
 Lista *nueva_lista(FuncionComparar comparar, FuncionEliminar eliminar, FuncionACadena toString) {
     Lista *nuevaLista = (Lista*) malloc( sizeof(Lista) );
 
-    nuevaLista->comparar = comparar;
-    nuevaLista->eliminar = eliminar;
-    nuevaLista->toString = toString;
+    if(comparar) {
+        nuevaLista->comparar = comparar;
+    } else {
+        nuevaLista->comparar = nodo_comparar_direccion;
+    }
+    if(eliminar) {
+        nuevaLista->eliminar = eliminar;
+    } else {
+        nuevaLista->eliminar = NULL;
+    }
+    if(toString) {
+        nuevaLista->toString = toString;
+    } else {
+        nuevaLista->toString = NULL;
+    }
     nuevaLista->final = nuevaLista->inicio = NULL;
     nuevaLista->tamano = 0;
 
@@ -19,29 +31,26 @@ void lista_insertar(Lista *lista, Valor valor) {
         Nodo *nuevoNodo = nuevo_nodo(NULL, NULL, valor);
         nuevoNodo->anterior = nuevoNodo->siguiente = nuevoNodo;
         lista->inicio = lista->final = nuevoNodo;
+        lista->tamano++;
         return;
     }
 
-    Nodo *aux = lista->inicio, *final = lista->final;
-
-    while(aux != final) {
-        aux = aux->siguiente;
-    }
-
-    Nodo *nuevoNodo = nuevo_nodo(aux, lista->inicio, valor);
-
+    Nodo *nuevoNodo = nuevo_nodo(lista->final, lista->inicio, valor);
+    lista->tamano++;
+    lista->final->siguiente = nuevoNodo;
+    lista->final = nuevoNodo;
 }
 
 int lista_buscar(Lista lista, Valor valor) {
     Nodo *aux = lista.inicio, *final = lista.final;
     int indice = 0;
 
-    while(aux != final & !lista.comparar(valor, aux->valor)) {
+    while(aux != final & !lista.comparar(aux->valor, valor)) {
         aux = aux->siguiente;
         indice++;
     }
 
-    if(lista.comparar(valor, aux->valor)) {
+    if(lista.comparar(aux->valor, valor)) {
         return indice;
     }
 
@@ -64,11 +73,7 @@ void lista_imprimir_detalles(Lista *lista) {
     size_t i = 0;
     printf("Lista {\n\tcomparar = %p,\n\teliminar = %p,\n\timpresion = %p\n\tnodos = {", lista->comparar, lista->eliminar, lista->toString);
     while(aux != lista->final) {
-        printf("[%d] = ", i++);
-        nodo_imprimir_detalles(aux, lista->toString);
-        printf("\n");
+        printf("[%d] = %s\n", i++, nodo_a_cadena(aux, lista->toString));
     }
-    printf("[%d] = ", i++);
-    nodo_imprimir_detalles(aux, lista->toString);
-    printf("\n\t}\n}");
+    printf("[%d] = %s\n\t}\n}", i++, nodo_a_cadena(aux, lista->toString));
 }

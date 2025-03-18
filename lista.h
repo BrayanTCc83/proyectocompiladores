@@ -23,9 +23,9 @@ typedef struct _lista_t {
 } Lista;
 
 Nodo *nuevo_nodo(Nodo*, Nodo*, Valor);
-bool nodo_comparar_direccion(Nodo*, Nodo*);
+bool nodo_comparar_direccion(Valor, Valor);
 void nodo_eliminar(Nodo*, FuncionEliminar);
-void nodo_imprimir_detalles(Nodo*, FuncionACadena);
+char *nodo_a_cadena(Nodo*, FuncionACadena);
 
 Lista *nueva_lista(FuncionComparar, FuncionEliminar, FuncionACadena);
 void lista_insertar(Lista*, Valor);

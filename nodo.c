@@ -12,7 +12,7 @@ Nodo *nuevo_nodo(Nodo *anterior, Nodo *siguiente, Valor valor) {
     return nuevoNodo;
 }
 
-bool nodo_comparar_direccion(Nodo *a, Nodo *b) {
+bool nodo_comparar_direccion(Valor a, Valor b) {
     return a == b;
 }
 
@@ -28,6 +28,12 @@ void nodo_eliminar(Nodo *nodo, FuncionEliminar eliminar) {
     free(nodo);
 }
 
-void nodo_imprimir_detalles(Nodo *nodo, FuncionACadena toString) {
-    printf("Nodo { this = %p, anterior = %p, siguiente = %p, valor = %s }", nodo, nodo->anterior, nodo->siguiente, toString(nodo->valor));
+char *nodo_a_cadena(Nodo *nodo, FuncionACadena toString) {
+    char *cadena = (char*) malloc( 200 );
+    int idx = sprintf(cadena, "Nodo { this = %p, anterior = %p, siguiente = %p, ", nodo, nodo->anterior, nodo->siguiente);
+    if(toString) {
+        sprintf(cadena + idx, "valor = %s }", toString(nodo->valor));
+    } else {
+        sprintf(cadena + idx, "valor = %p }", nodo->valor);
+    }
 }
