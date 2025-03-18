@@ -15,6 +15,9 @@
 
     void yyerror(const char*);
 
+    /*
+    * Creamos las tablas sin inicializar.
+    */
     Tabla *reservadas, *especiales, *identificadores, *aritmeticos, *relacionales, *asignacion, *cadenas, *enteros, *reales;
     Tabla *tokens;
 
@@ -25,6 +28,7 @@
 
 %option yylineno
 
+/* Definimos los componentes que usaremos */
 letM	[A-Z] 
 letm	[a-z]
 Dig	    [1-9]
@@ -105,6 +109,10 @@ int main(int argc, char *argv[]) {
     }
 
     // Tablas estáticas
+    /*
+        Definimos cada una de nuestras tablas estáticas, rellenandolas de
+        manera automática.
+    */
     reservadas = nueva_tabla("Reservada", RESERVADA);
     tabla_llenar(reservadas, 16, "Bool", "Cade", "Continuar", "Devo", "Ent", "Fals", "Flota", "Global", "Haz", "Mientras", "Nulo", "Para", "Parar", "Si", "Sino", "Ver");
     especiales = nueva_tabla("Simbolo especial", SIMBOLO_ESPECIAL);
