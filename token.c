@@ -90,3 +90,22 @@ void token_eliminar(Token *token) {
     token->posicion = 0;
     free(token);
 }
+
+Estatico *nuevo_estatico(const char *valor, const char *atomo) {
+    Estatico *nuevoEstatico = (Estatico*) malloc( sizeof(Estatico) );
+
+    nuevoEstatico->atomo = nueva_cadena(atomo);
+    nuevoEstatico->valor = nueva_cadena(valor);
+
+    return nuevoEstatico;
+}
+
+void estatico_eliminar(Estatico *estatico) {
+    estatico->atomo = 0;
+    
+    strcpy(estatico->valor, "");
+    free(estatico->valor);
+    estatico->valor = NULL;
+
+    free(estatico);
+}

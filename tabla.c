@@ -19,10 +19,14 @@ void tabla_llenar(Tabla *tabla, int cantidad, ...) {
     va_list args;
     va_start(args, cantidad);
 
-    for (int i = 0; i < cantidad; i++) {
+    for (int i = 0; i < cantidad / 2; i++) {
+        const char *valor = (const char*) va_arg(args, const char *);
+        const char *atomo = (const char*) va_arg(args, const char *);
         lista_insertar(
-            tabla->lista, 
-            nuevo_registro_tabla(i, tabla->tablaTipo, nueva_cadena(va_arg(args, const char *)))
+            tabla->lista,
+            nuevo_registro_tabla(i, tabla->tablaTipo, 
+                nuevo_estatico(valor, atomo)
+            )
         );
     }
 
@@ -39,6 +43,13 @@ int tabla_buscar(Tabla tabla, Valor valor) {
         return -1;
     }
     return lista_buscar(*tabla.lista, valor);
+}
+
+RegistroTabla *tabla_obtener(Tabla tabla, int index) {
+    if(tabla.lista->tamano == 0) {
+        return NULL;
+    }
+    return (RegistroTabla*) lista_obtener(*tabla.lista, index);
 }
 
 void tabla_eliminar(Tabla *tabla) {
@@ -71,7 +82,7 @@ void tabla_imprimir(FILE *archivo, Tabla tabla) {
             fprintf(archivo, "| %10s | %30s | %10s |\n", "Posicion", "Identificador", "Tipo");
             break;
         default:
-            fprintf(archivo, "| %10s | %10s |\n", "Posicion", "Valor");
+            fprintf(archivo, "| %10s | %10s | %6s |\n", "Posicion", "Valor", "Atomo");
     }
     
     Nodo *aux = tabla.lista->inicio;

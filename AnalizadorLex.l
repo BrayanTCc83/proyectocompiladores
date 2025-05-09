@@ -11,7 +11,9 @@
     */
     #include <stdio.h>
     #include <stdlib.h>
+    #include <locale.h>
     #include "token.h"
+    #include "atomos.h"
 
     void yyerror(const char*);
 
@@ -20,6 +22,11 @@
     */
     Tabla *reservadas, *especiales, *identificadores, *aritmeticos, *relacionales, *asignacion, *cadenas, *enteros, *reales;
     Tabla *tokens;
+
+    /*
+    * Cadena de atomos
+    */
+    CadenaAtomos *cadena;
 
     FILE *salida;
 
@@ -47,47 +54,81 @@ Comen   \[.*\]
 
 %%
 {Ident}		{
+    #ifdef DETAILS
     printf("Un identificador: %s\n", yytext);
-    tabla_insertar(tokens, nuevo_token(2,
+    #endif
+    tabla_insertar(tokens, nuevo_token(IDENTIFICADOR,
         tabla_insertar(identificadores, nuevo_identificador(yytext, SIN_TIPO))));
+    cadena_atomos_insertar(cadena, L"a");
 }
 {CCad}		{
+    #ifdef DETAILS
     printf("Una cadena: %s\n", yytext);
-    tabla_insertar(tokens, nuevo_token(6,
+    #endif
+    tabla_insertar(tokens, nuevo_token(LITERAL_CADENA,
         tabla_insertar(cadenas, nueva_cadena(yytext))));
+    cadena_atomos_insertar(cadena, L"s");
 }
 {CRel}		{
+    #ifdef DETAILS
     printf("Una constante real: %s\n", yytext);
-    tabla_insertar(tokens, nuevo_token(7,
+    #endif
+    tabla_insertar(tokens, nuevo_token(LITERAL_REAL,
         tabla_insertar(reales, nuevo_real(yytext))));
+    cadena_atomos_insertar(cadena, L"r");
 }
 {CEnt}		{
+    #ifdef DETAILS
     printf("Una constante entera: %s\n", yytext);
-    tabla_insertar(tokens, nuevo_token(8,
+    #endif
+    tabla_insertar(tokens, nuevo_token(LITERAL_ENTERA,
         tabla_insertar(enteros, nuevo_entero(yytext))));
+    cadena_atomos_insertar(cadena, L"e");
 }
 {PalRes}    {
+    #ifdef DETAILS
     printf("Una palabra reservada: %s\n", yytext);
-    tabla_insertar(tokens, nuevo_token(0, tabla_buscar(*reservadas, yytext)));
+    #endif
+    int i = tabla_buscar(*reservadas, yytext);
+    tabla_insertar(tokens, nuevo_token(RESERVADA, i));
+    cadena_atomos_insertar(cadena, (wchar_t*) tabla_obtener(*reservadas, i)->estatico.atomo);
 }
 {SimEsp}    {
+    #ifdef DETAILS
     printf("Un simbolo especial: %s\n", yytext);
-    tabla_insertar(tokens, nuevo_token(0, tabla_buscar(*especiales, yytext)));
+    #endif
+    int i = tabla_buscar(*especiales, yytext);
+    tabla_insertar(tokens, nuevo_token(SIMBOLO_ESPECIAL, i));
+    cadena_atomos_insertar(cadena, (wchar_t*) tabla_obtener(*especiales, i)->estatico.atomo);
 }
 {OpAri}     {
+    #ifdef DETAILS
     printf("Un operador aritmetico: %s\n", yytext);
-    tabla_insertar(tokens, nuevo_token(0, tabla_buscar(*aritmeticos, yytext)));
+    #endif
+    int i = tabla_buscar(*aritmeticos, yytext);
+    tabla_insertar(tokens, nuevo_token(ARITMETICO, i));
+    cadena_atomos_insertar(cadena, (wchar_t*) tabla_obtener(*aritmeticos, i)->estatico.atomo);
 }
 {OpRel}     {
+    #ifdef DETAILS
     printf("Un operador relacional: %s\n", yytext);
-    tabla_insertar(tokens, nuevo_token(0, tabla_buscar(*relacionales, yytext)));
+    #endif
+    int i = tabla_buscar(*relacionales, yytext);
+    tabla_insertar(tokens, nuevo_token(RELACIONAL, i));
+    cadena_atomos_insertar(cadena, (wchar_t*) tabla_obtener(*relacionales, i)->estatico.atomo);
 }
 {OpAsi}     {
+    #ifdef DETAILS
     printf("Un operador de asignacion: %s\n", yytext);
-    tabla_insertar(tokens, nuevo_token(0, tabla_buscar(*asignacion, yytext)));
+    #endif
+    int i = tabla_buscar(*asignacion, yytext);
+    tabla_insertar(tokens, nuevo_token(ASIGNACION, i));
+    cadena_atomos_insertar(cadena, (wchar_t*) tabla_obtener(*asignacion, i)->estatico.atomo);
 }
 {Comen}     {
+    #ifdef DETAILS
     printf("Un comentario: %s\n", yytext);
+    #endif
 }
 (\n|\t|\s)  {}
 .           { yyerror(yytext); }
@@ -102,11 +143,34 @@ int yywrap() {
     return 1;
 }
 
+void set_locale_spanish_latam() {
+    const char* result = NULL;
+
+#ifdef _WIN32
+    result = setlocale(LC_ALL, "Spanish_Mexico.1252");
+#else
+    result = setlocale(LC_ALL, "es_MX.UTF-8");
+#endif
+
+    if (result == NULL) {
+        // Fallback: usar la del sistema
+        result = setlocale(LC_ALL, "");
+    }
+
+    if (result == NULL) {
+        printf("No se pudo establecer la configuración regional.\n");
+    } else {
+        printf("Locale configurado como: %s\n", result);
+    }
+}
+
 int main(int argc, char *argv[]) {
     if(argc < 2) {
         perror("Es necesario proveer al menos un archivo.");
         exit(EXIT_FAILURE);
     }
+    set_locale_spanish_latam();
+    cadena = nueva_cadena_atomos();
 
     // Tablas estáticas
     /*
@@ -114,15 +178,70 @@ int main(int argc, char *argv[]) {
         manera automática.
     */
     reservadas = nueva_tabla("Reservada", RESERVADA);
-    tabla_llenar(reservadas, 16, "Bool", "Cade", "Continuar", "Devo", "Ent", "Fals", "Flota", "Global", "Haz", "Mientras", "Nulo", "Para", "Parar", "Si", "Sino", "Ver");
+    tabla_llenar(reservadas, 16 * 2,
+        "Bool", "b",
+        "Cade", "c",
+        "Continuar", "t",
+        "Devo", "d",
+        "Ent", "n",
+        "Fals", "q",
+        "Flota", "f",
+        "Global", "g",
+        "Haz", "h",
+        "Mientras", "w",
+        "Nulo", "u",
+        "Para", "o",
+        "Parar", "p",
+        "Si", "i",
+        "Sino", "l",
+        "Ver", "m"
+    );
     especiales = nueva_tabla("Simbolo especial", SIMBOLO_ESPECIAL);
-    tabla_llenar(especiales, 9, "<", ">", "<<", ">>", "#", "#!", "*", "|", "°");
+    tabla_llenar(especiales, 9 * 2,
+        "<", "(",
+        ">", ")",
+        "<<", "[",
+        ">>", "]",
+        "#", "{",
+        "#!", "}",
+        "*", ";",
+        "|", ",",
+        "\u00B0", "."
+    );
     aritmeticos = nueva_tabla("Aritmetico", ARITMETICO);
-    tabla_llenar(aritmeticos, 9, "sum", "rest", "mult", "div", "mod", "inc", "dec", "exp", "dive");
+    tabla_llenar(aritmeticos, 9 * 2,
+        "sum", "+",
+        "rest", "-",
+        "mult", "*",
+        "div", "/",
+        "mod", "%",
+        "inc", "z",
+        "dec", "j",
+        "exp", "k",
+        "dive", "~"
+    );
     relacionales = nueva_tabla("Relacional", RELACIONAL);
-    tabla_llenar(relacionales, 6, "h", "m", "e", "c", "he", "me");
+    tabla_llenar(relacionales, 6 * 2,
+        "h", ">",
+        "m", "<",
+        "e", L"\u00A1",
+        "c", "!",
+        "he", "x",
+        "me", "y"
+    );
     asignacion = nueva_tabla("Asignacion", ASIGNACION);
-    tabla_llenar(asignacion, 10, "->", "+->", "-->", "*->", "/->", "%->", ">>->", "<<->", "^->", "&->");
+    tabla_llenar(asignacion, 10 * 2,
+        "->", "=",
+        "+->", "#",
+        "-->", L"\u00F1",
+        "*->", "$",
+        "/->", "v",
+        "%->", "?",
+        ">>->", ":",
+        "<<->", "\"",
+        "^->", "^",
+        "&->", "&"
+    );
     // Tablas dinámicas
     identificadores = nueva_tabla("Simbolos", IDENTIFICADOR);
     cadenas = nueva_tabla("Literales cadenas", LITERAL_CADENA);

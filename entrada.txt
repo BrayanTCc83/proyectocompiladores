@@ -4,7 +4,7 @@
 @var3_
 @var4_
 @var5_
-@var6_
+@varñ6_
 [ Comentario ]
 -- Cadena 1 --
 -- Cadena 2 --
@@ -34,7 +34,7 @@ dive
 ->
 +->
 *->
-\->
+/->
 %->
 ^->
 &->

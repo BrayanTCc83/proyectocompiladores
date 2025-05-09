@@ -24,7 +24,7 @@ typedef enum _tipo_dato_t {
  * cada clase de componentes léxicos y otro para los tokens.
  */
 typedef enum _tabla_tipo_t {
-    TOKEN,
+    TOKEN = -1,
     RESERVADA,
     SIMBOLO_ESPECIAL,
     IDENTIFICADOR,
@@ -68,6 +68,11 @@ typedef struct _token_t {
     int clase, posicion;
 } Token;
 
+typedef struct _elemento_estatico_t {
+    char* atomo;
+    char *valor;
+} Estatico;
+
 /**
  * Permite crear cada uno de los registros de nuestra tabla, corresponde
  * a los valores guardados dentro de los nodos de la lista.
@@ -78,7 +83,7 @@ typedef struct _registro_tabla_t {
     union {
         ValorTabla valor;
         Token *token;
-        char *estatico;
+        Estatico estatico;
     };
 } RegistroTabla;
 
@@ -132,6 +137,9 @@ Token *nuevo_token(int, int);
  */
 void token_eliminar(Token*);
 
+Estatico *nuevo_estatico(const char *, const char *);
+void estatico_eliminar(Estatico*);
+
 /**
  * Permite crear un nuevo registro de tablas, para ello necesita saber su índice dentro de
  * la tabla, el tipo de dato que le corresponde y su valor.
@@ -167,6 +175,7 @@ int tabla_insertar(Tabla*, Valor);
  * Permite realizar una búsqueda simple dentro de la lista.
  */
 int tabla_buscar(Tabla, Valor);
+RegistroTabla *tabla_obtener(Tabla, int);
 /**
  * Permite limpiar la memoria y eliminar la basura que estaba siendo usada por nuestra tabla.
  */

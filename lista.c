@@ -64,6 +64,21 @@ int lista_buscar(Lista lista, Valor valor) {
     return -1;
 }
 
+Valor lista_obtener(Lista lista, int indice) {
+    if(indice >= lista.tamano) {
+        return NULL;
+    }
+    Nodo *aux = lista.inicio, *final = lista.final;
+    int i;
+
+    while(i < indice) {
+        aux = aux->siguiente;
+        i++;
+    }
+
+    return aux->valor;
+}
+
 void lista_eliminar(Lista *lista) {
     Nodo *aux = lista->inicio;
     while(aux != lista->final) {

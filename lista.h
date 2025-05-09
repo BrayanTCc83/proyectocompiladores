@@ -90,6 +90,7 @@ int lista_insertar(Lista*, Valor);
  * función de comparación asignada.
  */
 int lista_buscar(Lista, Valor);
+Valor lista_obtener(Lista, int);
 /**
  * Permite eliminar la lista, evitando que se quede basura dentro de la memoria y
  * liberando el espacio para usarlo a posterior.

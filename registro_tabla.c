@@ -8,7 +8,25 @@ RegistroTabla *nuevo_registro_tabla(int indice, TablaTipo tipo, Valor valor) {
 
     nuevoRegistro->indice = indice;
     nuevoRegistro->tipo = tipo;
-    nuevoRegistro->valor.v_identificador = valor;
+    switch (tipo) {
+        case TOKEN:
+            nuevoRegistro->token = valor;
+            break;
+        case LITERAL_CADENA:
+            nuevoRegistro->valor.v_identificador = valor;
+            break;
+        case LITERAL_ENTERA:
+            nuevoRegistro->valor.v_identificador = valor;
+            break;
+        case LITERAL_REAL:
+            nuevoRegistro->valor.v_identificador = valor;
+            break;
+        case IDENTIFICADOR:
+            nuevoRegistro->valor.v_identificador = valor;
+            break;
+        default:
+            nuevoRegistro->estatico = *(Estatico*) valor;
+    }
 
     return nuevoRegistro;
 }
@@ -27,7 +45,7 @@ bool registro_tabla_comparar(Valor registro, Valor valor) {
             return strcmp(((RegistroTabla*)registro)->valor.v_identificador->identificador, 
                 ((RegistroTabla*)valor)->valor.v_identificador->identificador) == 0;
         default:
-            return strcmp(((RegistroTabla*)registro)->estatico, (char*)valor) == 0;
+            return strcmp(((RegistroTabla*)registro)->estatico.valor, (char*)valor) == 0;
     }
     return false;
 }
@@ -68,7 +86,7 @@ char *registro_a_cadena(RegistroTabla *valor, TablaTipo tipo) {
             );
             break;
         default:
-            sprintf(cadena, "| %10d | %10s |", valor->indice, valor->estatico);
+            sprintf(cadena, "| %10d | %10s |      %s |", valor->indice, valor->estatico.valor, valor->estatico.atomo);
     }
 
     return cadena;
