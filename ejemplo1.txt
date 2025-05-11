@@ -1,0 +1,47 @@
+Global Bool @Activo_ | @Inactivo_*
+Global Ent @Contador_*
+Global Flota @Total_*
+Global Cade @Nombre_*
+
+Ent @Fibbonnacci_ < Ent @N_ > <<
+    Si < @N_ me 1 > <<
+        Devo < 1 >
+    >>
+
+    Devo < # @Fibbonnacci_ < @N_ rest 1 > #! sum # @Fibbonnacci_ < @N_ rest 2 > #! >
+>>
+
+Ent @Primo_ < Ent @N_ > <<
+    @i_ -> 2 °
+    Para < @i_ inc > <<
+        Si < @N_ mod @i_ e 0 > <<
+            Devo < 0 >
+        >>
+        Sino <<
+            Continuar °
+        >>
+    >>
+    Devo < 1 >
+>>
+
+Ent @Main_ < Ent @Argc_ | Cade @Argv_ > <<
+    @i_ -> 0 °
+    Haz <<
+        @res_ -> # @Fibbonnacci_ < @i_ > #! °
+        @None_ -> # @Imprimir_ < -- Resultado Fibbonnacci %d es %d -- | @i_ | @res_ > #! °
+    >> Mientras < @i_ me 15 >
+
+    Para < @i_ inc > <<
+        Si < @i_ h 20 > <<
+            Parar °
+        >>
+
+        @res_ -> # @Primo_ < @i_ mult 7 sum 1 > #! °
+        Si < @res_ e 1 > <<
+            @None_ -> # @Imprimir_ < -- El valor %d es primo -- | @i_ > #! °
+        >>
+        Sino <<
+            @None_ -> # @Imprimir_ < -- El valor %d es par -- | @i_ > #! °
+        >>
+    >>
+>>

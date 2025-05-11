@@ -14,6 +14,7 @@
     #include <locale.h>
     #include "token.h"
     #include "atomos.h"
+    #include "gramatica.h"
 
     void yyerror(const char*);
 
@@ -27,6 +28,7 @@
     * Cadena de atomos
     */
     CadenaAtomos *cadena;
+    extern bool errorSintactico;
 
     FILE *salida;
 
@@ -130,7 +132,7 @@ Comen   \[.*\]
     printf("Un comentario: %s\n", yytext);
     #endif
 }
-(\n|\t|\s)  {}
+(\n|\t|\s|" ")  {}
 .           { yyerror(yytext); }
 %%
 
@@ -254,6 +256,7 @@ int main(int argc, char *argv[]) {
     salida = fopen("salida.txt", "w");
 
 	yylex();
+    Program();
 
     tabla_imprimir(stdout, *reservadas);
     tabla_imprimir(stdout, *especiales);
@@ -265,6 +268,9 @@ int main(int argc, char *argv[]) {
     tabla_imprimir(stdout, *enteros);
     tabla_imprimir(stdout, *reales);
     tabla_imprimir(stdout, *tokens);
+    fprintf(stdout, "\nCadena de atomos: %s\n\n", cadena->cadena);
+    printf("El programa es %ls.\n\n", errorSintactico ? 
+        L"erroneo, presenta errores sintácticos" : L"correcto, no presenta errores");
     
     tabla_imprimir(salida, *reservadas);
     tabla_imprimir(salida, *especiales);
@@ -276,5 +282,6 @@ int main(int argc, char *argv[]) {
     tabla_imprimir(salida, *enteros);
     tabla_imprimir(salida, *reales);
     tabla_imprimir(salida, *tokens);
+    fprintf(salida, "\nCadena de atomos: %s\n\n", cadena->cadena);
     return EXIT_SUCCESS;
 }

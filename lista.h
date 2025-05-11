@@ -85,6 +85,8 @@ Lista *nueva_lista(FuncionComparar, FuncionEliminar, FuncionACadena);
  * lo indica la función de comparación).
  */
 int lista_insertar(Lista*, Valor);
+void lista_push(Lista*, Valor);
+Valor lista_pop(Lista*);
 /**
  * Busca la primera coincidencia de un valor dentro de la lista, a través de la
  * función de comparación asignada.
@@ -101,5 +103,6 @@ void lista_eliminar(Lista*);
  * pruebas del funcionamiento de las listas doblemente ligadas.
  */
 void lista_imprimir_detalles(Lista*);
+void lista_imprimir(Lista);
 
 #endif // _PROYECTO_COMPILADORES_LISTA

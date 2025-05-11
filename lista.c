@@ -48,6 +48,54 @@ int lista_insertar(Lista *lista, Valor valor) {
     return lista->tamano - 1;
 }
 
+void lista_push(Lista *lista, Valor valor) {
+    if(!lista->tamano) {
+        Nodo *nuevoNodo = nuevo_nodo(NULL, NULL, valor);
+        nuevoNodo->anterior = nuevoNodo->siguiente = nuevoNodo;
+        lista->inicio = lista->final = nuevoNodo;
+        lista->tamano++;
+        #ifdef DETAILS
+        lista_imprimir(*lista);
+        #endif
+        return;
+    }
+
+    Nodo *nuevoNodo = nuevo_nodo(lista->final, lista->inicio, valor);
+    lista->tamano++;
+    lista->inicio->anterior = nuevoNodo;
+    lista->final->siguiente = nuevoNodo;
+    lista->final = nuevoNodo;
+    #ifdef DETAILS
+    lista_imprimir(*lista);
+    #endif
+}
+
+Valor lista_pop(Lista *lista) {
+    if(!lista->tamano) {
+        return NULL;
+    }
+
+    Valor valor = lista->final->valor;
+    if(lista->final != lista->inicio) {
+        Nodo *tmp = lista->final;
+        lista->final = tmp->anterior;
+        lista->final->siguiente = lista->inicio;
+        lista->inicio->anterior = lista->final;
+        tmp->siguiente = tmp->anterior = NULL;
+        tmp->valor = NULL;
+        nodo_eliminar(tmp, NULL);
+    } else {
+        lista->final = lista->inicio = NULL;
+    }
+    lista->tamano--;
+    #ifdef DETAILS
+    if(lista->tamano){
+        lista_imprimir(*lista);
+    }
+    #endif
+    return valor;
+}
+
 int lista_buscar(Lista lista, Valor valor) {
     Nodo *aux = lista.inicio, *final = lista.final;
     int indice = 0;
@@ -98,4 +146,17 @@ void lista_imprimir_detalles(Lista *lista) {
         printf("[%d] = %s\n", i++, nodo_a_cadena(aux, lista->toString));
     }
     printf("[%d] = %s\n\t}\n}", i++, nodo_a_cadena(aux, lista->toString));
+}
+
+void lista_imprimir(Lista lista) {
+    Nodo *aux = lista.inicio;
+    size_t i = 0;
+    printf("Lista:");
+    while(aux != lista.final) {
+        printf(" %s", lista.toString(aux->valor));
+        aux = aux->siguiente;
+    }
+    if(aux == lista.final) {
+        printf(" %s\n", lista.toString(aux->valor));
+    }
 }
